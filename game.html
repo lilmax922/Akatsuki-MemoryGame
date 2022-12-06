@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style-game.css">
+  <title>火影忍者 曉 - 翻牌遊戲</title>
+</head>
+
+<body>
+  <div id="container" target="iframe">
+    <div id="game-start">
+      <div id="game-field"></div>
+    </div>
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js'
+    integrity='sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=='
+    crossorigin='anonymous'></script>
+  <!-- sweetalert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // 產生卡片
+    for (let i = 0; i < 24; i++) {
+      $('#game-field').append(`
+        <div class="card card-close">
+          <div class="card-front"></div>
+          <div class="card-back"></div>
+        </div>
+      `)
+    }
+    for (let i = 0; i < $('.card').length; i++) {
+      // 決定數字，得到 1 2 3 4 5 6 共兩次
+      const num = i % ($('.card').length / 2) + 1
+      $('.card').eq(i).find('.card-front').css('background-image', `url(./cards/Akatsuki-${num}.png)`)
+      // 資料屬性: data-attribute，so 我們在標籤裡放數字的資料
+      $('.card').eq(i).attr('data-num', num)
+
+      // 要取得索引值所以 -1，共 20 張牌所以索引值是 19
+      const shuffle = Math.round(Math.random() * ($('.card').length - 1))
+      // 打散卡片，隨機取一張卡片後 放到迴圈跑到的那張 "後面"
+      $('.card').eq(shuffle).insertAfter($('.card').eq(i))
+    }
+
+    $('#game-field').on('click', '.card', function () {
+      // 一次只能翻兩張，而且牌是蓋著的
+      if ($('.card:not(.card-close)').length < 2 && $(this).hasClass('card-close') && !$(this).hasClass('card-matched')) {
+        $(this).removeClass('card-close')
+      }
+
+      // 如果翻兩張了
+      if ($('.card:not(.card-close)').length === 2) {
+        // 如果 data-num 相同(代表兩張一樣)
+        if ($('.card:not(.card-close)').eq(0).attr('data-num') === $('.card:not(.card-close)').eq(1).attr('data-num')) {
+          // 就幫匹配正確的卡片新增 class: card-matched，標記 匹配成功
+          $('.card:not(.card-close)').addClass('card-matched')
+          // 幫配對成功的卡片透明，用 fadeTo 才不會 display: none 影響到排版，fadeOut 會影響
+          setTimeout(() => {
+            $('.card:not(.card-close)').fadeTo(800, 0)
+          }, 1000);
+        }
+
+        // 不管卡片相不相同，一秒鐘後(秒數可以基於上面 transition 設定秒數)就讓牌翻回來
+        setTimeout(() => {
+          $('.card:not(.card-close)').addClass('card-close')
+          if ($('.card-matched').length === $('.card').length) {
+            Swal.fire({
+              title: '成功抓到曉的所有成員了！',
+              color: 'rgb(162,80,90)',
+              background: 'rgba(238, 225, 225, 0.8)',
+              imageUrl: './素材/過關小圖.png',
+              imageWidth: 500,
+              imageHeight: 300,
+              imageAlt: 'Akatsuki',
+              confirmButtonText: '再玩一次',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                history.go(0)
+              }
+            })
+          }
+        }, 1900);
+      }
+    })
+  </script>
+</body>
+
+</html>

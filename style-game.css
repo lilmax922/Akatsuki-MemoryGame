@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#container {
+  height: 100vh;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-wrap: wrap;
+  background: url('./素材/yo.png')no-repeat;
+  background-size: cover;
+  animation: bd-switch 8s infinite;
+}
+
+/* 背景圖輪播 */
+@keyframes bd-switch {
+  0% {
+    background: url('./素材/yo.png')
+  }
+
+  20% {
+    background: url('./素材/yo-darker.png');
+  }
+
+  50% {
+    background: url('./素材/yo.png');
+  }
+
+  70% {
+    background: url('./素材/yo-darker.png');
+  }
+
+  100% {
+    background: url('./素材/yo.png');
+  }
+}
+
+
+/* 遊戲顯示區域 */
+#game-field {
+  width: 45%;
+  margin-left: 7rem;
+  margin-left: 200px;
+}
+
+/* 卡片盒 */
+.card {
+  width: 100px;
+  height: 140px;
+  position: relative;
+  margin: 20px;
+  float: left;
+  transition: transform 1.5s;
+  /* 設定子元素在 3D 空間內 */
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 0 50px 5px rgb(225, 66, 66);
+  transition: 1s;
+}
+
+.card-close {
+  /* 讓卡片一開始是蓋著的 */
+  transform: rotateY(180deg);
+}
+
+/* 卡片正面 */
+.card-front {
+  width: 100%;
+  height: 100%;
+  background: url('./cards/Akatsuki-1.png')no-repeat;
+  border-radius: 10px;
+  background-size: cover;
+  position: absolute;
+  /* 隱藏背面 */
+  backface-visibility: hidden;
+}
+
+/* 卡片背面 */
+.card-back {
+  width: 100%;
+  height: 100%;
+  background: url('./cards/card-back.png')no-repeat center;
+  border-radius: 10px;
+  background-size: contain;
+  position: absolute;
+  /* 隱藏背面 */
+  backface-visibility: hidden;
+  /* 背靠背疊在一起所以轉180度 */
+  transform: rotateY(180deg);
+}
